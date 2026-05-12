@@ -11,310 +11,101 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.3/docx.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --brand: #1a5276;
-      --brand-light: #d6eaf8;
-      --brand-dark: #154360;
-      --bg: #f5f6fa;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #1a202c;
-      --muted: #718096;
-      --radius: 10px;
-      --sidebar: 320px;
-    }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ── TOP NAV ── */
-    nav {
-      background: var(--brand);
-      color: white;
-      padding: 0 24px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      flex-shrink: 0;
-    }
-    .nav-brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; letter-spacing: 0.3px; }
-    .nav-logo { background: rgba(255,255,255,0.2); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; }
+    :root { --brand: #1a5276; --brand-light: #d6eaf8; --brand-dark: #154360; --bg: #f5f6fa; --surface: #ffffff; --border: #e2e8f0; --text: #1a202c; --muted: #718096; --radius: 10px; --sidebar: 320px; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--brand); color: white; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.15); flex-shrink: 0; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+    .nav-logo { background: rgba(255,255,255,0.2); border-radius: 6px; width: 40px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; overflow: hidden; }
+    .nav-logo img { width: 100%; height: 100%; object-fit: contain; }
     .nav-badge { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 500; }
-
-    /* ── LAYOUT ── */
     .app { display: flex; flex: 1; min-height: 0; overflow: hidden; height: calc(100vh - 56px); }
-
-    /* ── SIDEBAR ── */
-    .sidebar {
-      width: var(--sidebar);
-      flex-shrink: 0;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      padding: 20px;
-      gap: 22px;
-    }
-
-    .section-label {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    /* Upload zone */
-    .upload-zone {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 28px 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: block;
-    }
-    .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--brand);
-      background: var(--brand-light);
-    }
-    .upload-zone i { font-size: 28px; color: var(--muted); display: block; margin-bottom: 8px; }
-    .upload-zone p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .sidebar { width: var(--sidebar); flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; padding: 20px; gap: 20px; }
+    .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+    .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.2s; display: block; }
+    .upload-zone:hover { border-color: var(--brand); background: var(--brand-light); }
+    .upload-zone i { font-size: 22px; color: var(--muted); display: block; margin-bottom: 6px; }
+    .upload-zone p { font-size: 12px; color: var(--muted); line-height: 1.5; }
     .upload-zone strong { color: var(--text); }
     input[type=file] { display: none; }
-
-    .file-pill {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      background: var(--brand-light);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 12px;
-      color: var(--brand);
-      font-weight: 500;
-      margin-top: 8px;
-    }
-
-    /* Rules */
-    .rules { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-    .rules li { display: flex; gap: 9px; font-size: 12px; color: var(--muted); line-height: 1.5; align-items: flex-start; }
+    .file-pill { display: none; align-items: center; gap: 8px; background: var(--brand-light); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--brand); font-weight: 500; margin-top: 8px; }
+    .logo-preview { width: 100%; height: 64px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #fafafa; margin-top: 8px; overflow: hidden; }
+    .logo-preview img { max-height: 54px; max-width: 100%; object-fit: contain; }
+    .logo-placeholder { font-size: 11px; color: var(--muted); }
+    .rules { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .rules li { display: flex; gap: 8px; font-size: 12px; color: var(--muted); line-height: 1.5; align-items: flex-start; }
     .rules li i { color: var(--brand); flex-shrink: 0; margin-top: 2px; width: 14px; }
-
-    /* Role hint */
-    .role-input {
-      width: 100%;
-      height: 70px;
-      font-size: 12px;
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      resize: none;
-      font-family: inherit;
-      color: var(--text);
-      background: var(--surface);
-      transition: border 0.2s;
-    }
+    .role-input { width: 100%; height: 60px; font-size: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; resize: none; font-family: inherit; color: var(--text); background: var(--surface); }
     .role-input:focus { outline: none; border-color: var(--brand); }
-
-    /* Buttons */
-    .btn-format {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      background: var(--brand); color: white; border: none;
-      border-radius: 8px; padding: 11px 16px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      width: 100%; transition: background 0.2s;
-    }
+    .btn-format { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--brand); color: white; border: none; border-radius: 8px; padding: 11px 16px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; }
     .btn-format:hover { background: var(--brand-dark); }
     .btn-format:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    /* ── MAIN PANEL ── */
     .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
-
-    .toolbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 20px; border-bottom: 1px solid var(--border);
-      background: var(--surface); flex-shrink: 0;
-    }
-
+    .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
     .tabs { display: flex; gap: 4px; }
-    .tab {
-      padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer;
-      color: var(--muted); border: 1px solid transparent; transition: all 0.15s;
-      font-weight: 500;
-    }
+    .tab { padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--muted); border: 1px solid transparent; transition: all 0.15s; font-weight: 500; }
     .tab.active { background: var(--brand-light); color: var(--brand); border-color: var(--brand-light); }
-
     .dl-btns { display: flex; gap: 8px; }
-    .btn-dl {
-      display: flex; align-items: center; gap: 6px;
-      padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 500;
-      border: 1px solid var(--border); background: var(--surface);
-      color: var(--text); cursor: pointer; transition: all 0.15s;
-    }
+    .btn-dl { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; transition: all 0.15s; }
     .btn-dl:hover { background: var(--bg); border-color: var(--brand); color: var(--brand); }
     .btn-dl:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-dl i { font-size: 14px; }
-
-    /* Preview area */
     .preview-wrap { flex: 1; overflow-y: auto; padding: 28px 20px; background: #e8ecf1; }
-
-    .placeholder {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      height: 100%; gap: 14px; color: var(--muted); text-align: center; padding: 40px;
-    }
+    .placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 14px; color: var(--muted); text-align: center; padding: 40px; }
     .placeholder i { font-size: 48px; opacity: 0.25; }
     .placeholder h3 { font-size: 16px; font-weight: 600; color: var(--text); }
     .placeholder p { font-size: 13px; max-width: 340px; line-height: 1.6; }
-
-    /* Raw text view */
-    .raw-wrap {
-      flex: 1; overflow-y: auto; padding: 20px; background: var(--surface);
-      font-family: 'Courier New', monospace; font-size: 12px; color: var(--text);
-      white-space: pre-wrap; line-height: 1.7; display: none;
-    }
-
-    /* Status bar */
-    .status-bar {
-      padding: 7px 20px; font-size: 11px; color: var(--muted);
-      border-top: 1px solid var(--border); background: var(--surface);
-      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
-    }
+    .raw-wrap { flex: 1; overflow-y: auto; padding: 20px; background: var(--surface); font-family: 'Courier New', monospace; font-size: 12px; color: var(--text); white-space: pre-wrap; line-height: 1.7; display: none; }
+    .status-bar { padding: 7px 20px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .spin { animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── RESUME STYLES ── */
-    .resume-page {
-      background: white;
-      max-width: 700px;
-      margin: 0 auto;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.1);
-      border-radius: 2px;
-      overflow: hidden;
-      font-family: Calibri, sans-serif;
-    }
-
-    .r-header {
-      background: #1a5276;
-      color: white;
-      padding: 22px 30px 18px;
-    }
-    .r-logo-row {
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
-    }
-    .r-logo {
-      display: flex; align-items: center; gap: 7px;
-      font-size: 12px; font-weight: 800; letter-spacing: 1px; opacity: 0.9;
-    }
-    .r-logo-box {
-      background: rgba(255,255,255,0.25); border-radius: 4px;
-      width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 900;
-    }
-    .r-name { font-size: 22px; font-weight: 700; font-family: Calibri, sans-serif; letter-spacing: 0.3px; }
-    .r-role { font-size: 13px; opacity: 0.85; margin-top: 2px; font-family: Calibri, sans-serif; }
-    .r-contacts { margin-top: 10px; display: flex; gap: 18px; flex-wrap: wrap; }
-    .r-contacts span { font-size: 11px; opacity: 0.8; display: flex; align-items: center; gap: 4px; font-family: Calibri, sans-serif; }
-
-    .r-body { padding: 20px 30px; }
-
-    .r-section { margin-bottom: 18px; }
-    .r-section-title {
-      font-size: 14px; font-weight: 700; text-transform: uppercase;
-      color: #1a5276; font-family: Calibri, sans-serif; letter-spacing: 0.5px;
-      padding-bottom: 4px; border-bottom: 1.5px solid #1a5276; margin-bottom: 10px;
-    }
-
+    /* Resume - fully white */
+    .resume-page { background: white; max-width: 700px; margin: 0 auto; box-shadow: 0 2px 16px rgba(0,0,0,0.1); border-radius: 2px; font-family: Calibri, sans-serif; }
+    .r-header { background: white; border-bottom: 2px solid #1a5276; padding: 16px 30px 14px; }
+    .r-logo-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .r-logo img { height: 38px; max-width: 150px; object-fit: contain; }
+    .r-logo-text { font-size: 15px; font-weight: 800; letter-spacing: 1px; color: #1a5276; }
+    .r-name { font-size: 22px; font-weight: 700; font-family: Calibri, sans-serif; color: #111; }
+    .r-role { font-size: 13px; color: #555; margin-top: 2px; font-family: Calibri, sans-serif; }
+    .r-body { padding: 18px 30px; }
+    .r-section { margin-bottom: 14px; }
+    .r-section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; color: #1a5276; font-family: Calibri, sans-serif; letter-spacing: 0.5px; padding-bottom: 3px; border-bottom: 1.5px solid #1a5276; margin-bottom: 8px; }
     .r-summary { font-size: 12px; color: #333; line-height: 1.65; font-family: Calibri, sans-serif; }
-
-    .exp-item { margin-bottom: 14px; }
+    .exp-item { margin-bottom: 12px; }
     .exp-desig { font-size: 14px; font-weight: 700; text-transform: uppercase; font-family: Calibri, sans-serif; color: #111; }
-    .exp-co { font-size: 14px; text-transform: uppercase; font-family: Calibri, sans-serif; color: #222; font-weight: 600; }
-    .exp-yr { font-size: 12px; color: #777; font-family: Calibri, sans-serif; margin: 2px 0 5px; }
+    .exp-co { font-size: 14px; text-transform: uppercase; font-family: Calibri, sans-serif; color: #333; font-weight: 600; }
+    .exp-yr { font-size: 12px; color: #888; font-family: Calibri, sans-serif; margin: 2px 0 4px; }
     .exp-list { list-style: disc; padding-left: 18px; }
     .exp-list li { font-size: 12px; color: #333; line-height: 1.65; font-family: Calibri, sans-serif; margin-bottom: 2px; }
-
-    .proj-item { margin-bottom: 10px; }
+    .proj-item { margin-bottom: 8px; }
     .proj-name { font-size: 12px; font-weight: 700; color: #1a5276; font-family: Calibri, sans-serif; }
     .proj-desc { font-size: 12px; color: #333; line-height: 1.5; font-family: Calibri, sans-serif; }
-
-    .edu-item { margin-bottom: 10px; }
+    .edu-item { margin-bottom: 8px; }
     .edu-deg { font-size: 14px; font-weight: 700; text-transform: uppercase; font-family: Calibri, sans-serif; color: #111; }
     .edu-school { font-size: 12px; color: #333; font-family: Calibri, sans-serif; }
-    .edu-yr { font-size: 12px; color: #777; font-family: Calibri, sans-serif; }
-
-    .cert-item { margin-bottom: 10px; }
+    .edu-yr { font-size: 12px; color: #888; font-family: Calibri, sans-serif; }
+    .cert-item { margin-bottom: 8px; }
     .cert-name { font-size: 14px; font-weight: 700; text-transform: uppercase; font-family: Calibri, sans-serif; color: #111; }
     .cert-org { font-size: 12px; color: #333; font-family: Calibri, sans-serif; }
-    .cert-yr { font-size: 12px; color: #777; font-family: Calibri, sans-serif; }
-
+    .cert-yr { font-size: 12px; color: #888; font-family: Calibri, sans-serif; }
     .skills-grid { columns: 2; gap: 16px; list-style: disc; padding-left: 18px; }
     .skills-grid li { font-size: 12px; color: #333; font-family: Calibri, sans-serif; line-height: 1.8; }
-
-    .r-footer {
-      padding: 8px 30px; border-top: 1px solid #eee;
-      display: flex; align-items: center; justify-content: space-between;
-      background: #f8f9fb;
-    }
-    .r-footer .r-logo { color: #1a5276; opacity: 1; }
-    .r-footer .r-logo-box { background: #1a5276; color: white; }
-
+    .r-footer { padding: 8px 30px; border-top: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; background: white; }
+    .r-footer img { height: 26px; max-width: 90px; object-fit: contain; }
+    .r-footer-text { font-size: 11px; font-weight: 800; color: #1a5276; letter-spacing: 1px; }
     [contenteditable]:hover { outline: 1.5px dashed #1a5276; border-radius: 3px; }
-    [contenteditable]:focus { outline: 1.5px solid #1a5276; background: #eef4fb; border-radius: 3px; }
-
-    /* API Key Modal */
-    .modal-bg {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-      display: flex; align-items: center; justify-content: center; z-index: 100;
-    }
-    .modal {
-      background: white; border-radius: 12px; padding: 28px;
-      width: 420px; box-shadow: 0 8px 40px rgba(0,0,0,0.2);
-    }
-    .modal h2 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #1a5276; }
-    .modal p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
-    .modal input[type=text] {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
-      border-radius: 8px; font-size: 13px; margin-bottom: 12px;
-      font-family: monospace; color: var(--text);
-    }
-    .modal input:focus { outline: none; border-color: #1a5276; }
-    .modal-btns { display: flex; gap: 8px; }
-    .modal .btn-format { flex: 1; }
-    .modal .btn-skip { flex: 1; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 500; cursor: pointer; }
-
-    @media (max-width: 768px) {
-      .app { flex-direction: column; height: auto; overflow: visible; }
-      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
-      .main { height: 70vh; }
-    }
+    [contenteditable]:focus { outline: 1.5px solid #1a5276; background: #f0f5fc; border-radius: 3px; }
   </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-brand">
-    <div class="nav-logo">S</div>
+    <div class="nav-logo" id="navLogoBox">S</div>
     Simpalm Resume Formatter
   </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span class="nav-badge"><i class="fa-solid fa-wand-magic-sparkles" style="margin-right:4px;"></i> AI-Powered</span>
-  </div>
+  <span class="nav-badge"><i class="fa-solid fa-wand-magic-sparkles" style="margin-right:4px;"></i> AI-Powered</span>
 </nav>
 
 <div class="app">
-  <!-- SIDEBAR -->
   <div class="sidebar">
 
     <div>
@@ -331,22 +122,35 @@
     </div>
 
     <div>
-      <div class="section-label">Formatting Rules Applied</div>
+      <div class="section-label">Simpalm Logo <span style="font-weight:400;text-transform:none;font-size:10px;">(PNG / JPG)</span></div>
+      <label class="upload-zone" id="logoZone" style="padding:12px;">
+        <i class="fa-solid fa-image" style="font-size:18px;"></i>
+        <p><strong>Click to upload your logo</strong></p>
+        <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.webp" />
+      </label>
+      <div class="logo-preview" id="logoPreview">
+        <span class="logo-placeholder">No logo — text fallback will be used</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Formatting Rules</div>
       <ul class="rules">
-        <li><i class="fa-solid fa-building"></i> Simpalm logo on every page</li>
+        <li><i class="fa-solid fa-image"></i> Your logo on every page header &amp; footer</li>
         <li><i class="fa-solid fa-align-left"></i> AI-rephrased professional summary</li>
-        <li><i class="fa-solid fa-briefcase"></i> Designation BOLD UPPER → Company UPPER → Years → Bullet points</li>
-        <li><i class="fa-solid fa-diagram-project"></i> Project details (if present)</li>
+        <li><i class="fa-solid fa-briefcase"></i> Designation BOLD UPPER → Company UPPER → Years → Bullets</li>
+        <li><i class="fa-solid fa-diagram-project"></i> Projects section (if present)</li>
         <li><i class="fa-solid fa-graduation-cap"></i> Education: Degree UPPER → University → Year</li>
-        <li><i class="fa-solid fa-certificate"></i> Certifications: same as education</li>
+        <li><i class="fa-solid fa-certificate"></i> Certifications: same format</li>
         <li><i class="fa-solid fa-tools"></i> Skills as bullet list</li>
-        <li><i class="fa-solid fa-font"></i> Calibri 14pt (UPPER/Bold) · 12pt (body)</li>
+        <li><i class="fa-solid fa-eye-slash"></i> No personal contact info</li>
+        <li><i class="fa-solid fa-font"></i> Calibri font throughout</li>
       </ul>
     </div>
 
     <div>
-      <div class="section-label">Candidate Role / Context <span style="font-weight:400;text-transform:none;font-size:10px;">(optional)</span></div>
-      <textarea class="role-input" id="roleHint" placeholder="e.g. Senior React Developer, 8 yrs fintech, AWS certified…"></textarea>
+      <div class="section-label">Role / Context <span style="font-weight:400;text-transform:none;font-size:10px;">(optional)</span></div>
+      <textarea class="role-input" id="roleHint" placeholder="e.g. Senior React Developer, 8 yrs in fintech…"></textarea>
     </div>
 
     <button class="btn-format" id="formatBtn" disabled onclick="formatResume()">
@@ -356,7 +160,6 @@
 
   </div>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="toolbar">
       <div class="tabs">
@@ -369,10 +172,10 @@
       </div>
       <div class="dl-btns">
         <button class="btn-dl" id="dlPdf" onclick="downloadResume('pdf')" disabled>
-          <i class="fa-solid fa-file-pdf" style="color:#e74c3c;"></i> PDF
+          <i class="fa-solid fa-file-pdf" style="color:#e74c3c;"></i> Download PDF
         </button>
         <button class="btn-dl" id="dlDocx" onclick="downloadResume('docx')" disabled>
-          <i class="fa-solid fa-file-word" style="color:#2980b9;"></i> DOCX
+          <i class="fa-solid fa-file-word" style="color:#2980b9;"></i> Download DOCX
         </button>
       </div>
     </div>
@@ -381,10 +184,9 @@
       <div class="placeholder">
         <i class="fa-regular fa-file-lines"></i>
         <h3>No resume formatted yet</h3>
-        <p>Upload a resume on the left, then click <strong>Format Resume with AI</strong> to see the Simpalm-branded result here.</p>
+        <p>Upload a resume on the left, then click <strong>Format Resume with AI</strong>.</p>
       </div>
     </div>
-
     <div class="raw-wrap" id="rawWrap"></div>
 
     <div class="status-bar">
@@ -399,435 +201,394 @@
 
   let extractedText = '';
   let resumeData = null;
+  let logoDataUrl = null;
 
-  // Upload
-  const uploadZone = document.getElementById('uploadZone');
-  const fileInput = document.getElementById('fileInput');
-
-  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
-  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-  uploadZone.addEventListener('drop', e => {
-    e.preventDefault(); uploadZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  // Logo upload
+  document.getElementById('logoZone').addEventListener('click', () => document.getElementById('logoInput').click());
+  document.getElementById('logoInput').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      logoDataUrl = ev.target.result;
+      document.getElementById('logoPreview').innerHTML = '<img src="' + logoDataUrl + '" alt="Logo" />';
+      document.getElementById('navLogoBox').innerHTML = '<img src="' + logoDataUrl + '" alt="logo" style="width:100%;height:100%;object-fit:contain;" />';
+    };
+    reader.readAsDataURL(file);
   });
-  fileInput.addEventListener('change', e => { if (e.target.files.length) handleFile(e.target.files[0]); });
+
+  // Resume upload
+  var uploadZone = document.getElementById('uploadZone');
+  var fileInput = document.getElementById('fileInput');
+  uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.style.borderColor='var(--brand)'; });
+  uploadZone.addEventListener('dragleave', function() { uploadZone.style.borderColor=''; });
+  uploadZone.addEventListener('drop', function(e) { e.preventDefault(); uploadZone.style.borderColor=''; if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', function(e) { if(e.target.files.length) handleFile(e.target.files[0]); });
 
   async function handleFile(file) {
-    const pill = document.getElementById('filePill');
     document.getElementById('fileName').textContent = file.name;
-    pill.style.display = 'flex';
-    setStatus('Extracting text from ' + file.name + '…', true);
+    document.getElementById('filePill').style.display = 'flex';
+    setStatus('Reading ' + file.name + '…', true);
     try {
-      const ext = file.name.split('.').pop().toLowerCase();
-      if (ext === 'txt') extractedText = await file.text();
-      else if (ext === 'docx' || ext === 'doc') {
-        const buf = await file.arrayBuffer();
-        const r = await mammoth.extractRawText({ arrayBuffer: buf });
+      var ext = file.name.split('.').pop().toLowerCase();
+      if (ext === 'txt') {
+        extractedText = await file.text();
+      } else if (ext === 'docx' || ext === 'doc') {
+        var buf = await file.arrayBuffer();
+        var r = await mammoth.extractRawText({ arrayBuffer: buf });
         extractedText = r.value;
       } else if (ext === 'pdf') {
         extractedText = await extractPdf(file);
-      } else extractedText = await file.text();
+      } else {
+        extractedText = await file.text();
+      }
       document.getElementById('rawWrap').textContent = extractedText;
-      setStatus('Text extracted ✓ — click Format Resume with AI');
+      setStatus('File read ✓ — click Format Resume with AI');
       document.getElementById('formatBtn').disabled = false;
-    } catch (err) { setStatus('Error: ' + err.message); }
+    } catch(err) {
+      setStatus('Error: ' + err.message);
+    }
   }
 
   async function extractPdf(file) {
-    const buf = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-    let text = '';
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const c = await page.getTextContent();
-      text += c.items.map(x => x.str).join(' ') + '\n';
+    var buf = await file.arrayBuffer();
+    var pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    var text = '';
+    for (var i = 1; i <= pdf.numPages; i++) {
+      var page = await pdf.getPage(i);
+      var c = await page.getTextContent();
+      text += c.items.map(function(x){ return x.str; }).join(' ') + '\n';
     }
     return text;
   }
 
-  // Tabs
   function switchTab(tab) {
-    document.getElementById('tab-formatted').classList.toggle('active', tab === 'formatted');
-    document.getElementById('tab-raw').classList.toggle('active', tab === 'raw');
-    document.getElementById('previewWrap').style.display = tab === 'formatted' ? 'block' : 'none';
-    document.getElementById('rawWrap').style.display = tab === 'raw' ? 'block' : 'none';
+    document.getElementById('tab-formatted').classList.toggle('active', tab==='formatted');
+    document.getElementById('tab-raw').classList.toggle('active', tab==='raw');
+    document.getElementById('previewWrap').style.display = tab==='formatted' ? 'block' : 'none';
+    document.getElementById('rawWrap').style.display = tab==='raw' ? 'block' : 'none';
   }
 
   function setStatus(msg, loading) {
     document.getElementById('statusText').textContent = msg;
-    const ic = document.getElementById('statusIcon');
-    ic.className = loading ? 'fa-solid fa-spinner spin' : 'fa-solid fa-circle-info';
+    document.getElementById('statusIcon').className = loading ? 'fa-solid fa-spinner spin' : 'fa-solid fa-circle-info';
   }
 
-  // Format
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   async function formatResume() {
     if (!extractedText) return;
     document.getElementById('formatBtn').disabled = true;
     setStatus('Sending to Claude AI…', true);
-    document.getElementById('previewWrap').innerHTML = `
-      <div class="placeholder">
-        <i class="fa-solid fa-spinner spin" style="font-size:36px;opacity:0.4;"></i>
-        <h3>Formatting in progress…</h3>
-        <p>Claude AI is analysing the resume, rephrasing the summary, and applying Simpalm formatting rules.</p>
-      </div>`;
+    document.getElementById('previewWrap').innerHTML = '<div class="placeholder"><i class="fa-solid fa-spinner spin" style="font-size:36px;opacity:0.4;"></i><h3>Formatting in progress…</h3><p>Claude AI is analysing and formatting the resume.</p></div>';
 
-    const roleHint = document.getElementById('roleHint').value.trim();
-    const prompt = `You are a professional resume formatter for Simpalm, a software development company. Analyse the resume text below and return ONLY a valid JSON object — no explanation, no markdown, no code fences.
-
-Rules:
-1. Extract candidate name, designation, email, phone, location
-2. Write a compelling 3–4 sentence professional summary based on their role, tools, industries, and achievements${roleHint ? '. Extra context: ' + roleHint : ''}
-3. For each experience entry extract: designation, company, startYear, endYear (or "Present"), and at least 3 concise responsibility bullet points
-4. Extract project details if mentioned: name and description
-5. Extract education: degree, institution, year
-6. Extract certifications if present: name, organization, year
-7. Extract all skills as a flat string array
-
-JSON schema (use exactly this structure):
-{
-  "name": "",
-  "designation": "",
-  "email": "",
-  "phone": "",
-  "location": "",
-  "summary": "",
-  "experience": [{"designation":"","company":"","startYear":"","endYear":"","responsibilities":[]}],
-  "projects": [{"name":"","description":""}],
-  "education": [{"degree":"","institution":"","year":""}],
-  "certifications": [{"name":"","organization":"","year":""}],
-  "skills": []
-}
-
-Resume text:
-${extractedText.substring(0, 6000)}`;
+    var roleHint = document.getElementById('roleHint').value.trim();
+    var prompt = 'You are a professional resume formatter for Simpalm. Analyse the resume and return ONLY valid JSON, no explanation, no markdown fences.\n\nRules:\n1. Extract name and designation only. Set email, phone, location to empty string "".\n2. Write a 3-4 sentence professional summary based on role/tools/industries' + (roleHint ? '. Extra context: ' + roleHint : '') + '.\n3. For each job: designation, company, startYear, endYear or "Present", at least 3 responsibility bullets.\n4. Extract projects if mentioned.\n5. Extract education: degree, institution, year.\n6. Extract certifications if any.\n7. All skills as a flat array.\n\nReturn exactly this JSON:\n{"name":"","designation":"","email":"","phone":"","location":"","summary":"","experience":[{"designation":"","company":"","startYear":"","endYear":"","responsibilities":[]}],"projects":[{"name":"","description":""}],"education":[{"degree":"","institution":"","year":""}],"certifications":[{"name":"","organization":"","year":""}],"skills":[]}\n\nResume:\n' + extractedText.substring(0, 6000);
 
     try {
-      const res = await fetch('/api/format', {
+      var res = await fetch('/api/format', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
-          max_tokens: 2500,
-          messages: [{ role: 'user', content: prompt }]
-        })
+        body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 2500, messages: [{ role: 'user', content: prompt }] })
       });
-
-      // Always read as text first — never crash on empty body
-      const resText = await res.text();
-      if (!resText || resText.trim() === '') {
-        throw new Error('Server returned an empty response. Check your Vercel environment variable ANTHROPIC_API_KEY is set and redeploy.');
-      }
-      let data;
-      try {
-        data = JSON.parse(resText);
-      } catch (e) {
-        throw new Error('Unexpected server response: ' + resText.substring(0, 200));
-      }
-      if (!res.ok || data.error) {
-        throw new Error(data.error || `Server error (${res.status})`);
-      }
-      const raw = data.content?.find(b => b.type === 'text')?.text || '{}';
-      resumeData = JSON.parse(raw.replace(/```json|```/g, '').trim());
+      var resText = await res.text();
+      if (!resText || resText.trim() === '') throw new Error('Empty response from server. Check ANTHROPIC_API_KEY on Vercel → Settings → Environment Variables, then Redeploy.');
+      var data;
+      try { data = JSON.parse(resText); } catch(e) { throw new Error('Bad response: ' + resText.substring(0,150)); }
+      if (!res.ok || data.error) throw new Error(data.error || 'Server error ' + res.status);
+      var raw = (data.content || []).find(function(b){ return b.type==='text'; });
+      var jsonStr = raw ? raw.text.replace(/```json|```/g,'').trim() : '{}';
+      resumeData = JSON.parse(jsonStr);
       renderPreview(resumeData);
       document.getElementById('dlPdf').disabled = false;
       document.getElementById('dlDocx').disabled = false;
-      setStatus('Resume formatted ✓ — click any section to edit, then download');
-    } catch (err) {
+      setStatus('Resume formatted ✓ — edit any section, then download');
+    } catch(err) {
       setStatus('Error: ' + err.message);
-      document.getElementById('previewWrap').innerHTML = `<div class="placeholder"><i class="fa-solid fa-triangle-exclamation" style="color:#e74c3c;font-size:36px;opacity:0.6;"></i><h3>Formatting failed</h3><p>${err.message}</p></div>`;
+      document.getElementById('previewWrap').innerHTML = '<div class="placeholder"><i class="fa-solid fa-triangle-exclamation" style="color:#e74c3c;font-size:36px;opacity:0.6;"></i><h3>Formatting failed</h3><p>' + esc(err.message) + '</p></div>';
     } finally {
       document.getElementById('formatBtn').disabled = false;
     }
   }
 
-  function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function getLogoHTML() {
+    if (logoDataUrl) return '<div class="r-logo"><img src="' + logoDataUrl + '" alt="Simpalm Logo" /></div>';
+    return '<div class="r-logo"><span class="r-logo-text">SIMPALM</span></div>';
   }
 
   function renderPreview(d) {
-    const logoHTML = `<div class="r-logo"><div class="r-logo-box">S</div>SIMPALM</div>`;
-    const hasProj = d.projects?.length && d.projects[0].name;
-    const hasCert = d.certifications?.length && d.certifications[0].name;
+    var hasProj = d.projects && d.projects.length && d.projects[0].name;
+    var hasCert = d.certifications && d.certifications.length && d.certifications[0].name;
 
-    const expHTML = (d.experience || []).map(e => `
-      <div class="exp-item">
-        <div class="exp-desig" contenteditable="true">${esc(e.designation)}</div>
-        <div class="exp-co" contenteditable="true">${esc(e.company)}</div>
-        <div class="exp-yr">${esc(e.startYear)} – ${esc(e.endYear)}</div>
-        <ul class="exp-list">${(e.responsibilities||[]).map(r=>`<li contenteditable="true">${esc(r)}</li>`).join('')}</ul>
-      </div>`).join('');
+    var expHTML = (d.experience||[]).map(function(e) {
+      return '<div class="exp-item"><div class="exp-desig" contenteditable="true">'+esc(e.designation)+'</div><div class="exp-co" contenteditable="true">'+esc(e.company)+'</div><div class="exp-yr">'+esc(e.startYear)+' \u2013 '+esc(e.endYear)+'</div><ul class="exp-list">'+(e.responsibilities||[]).map(function(r){ return '<li contenteditable="true">'+esc(r)+'</li>'; }).join('')+'</ul></div>';
+    }).join('');
 
-    const projHTML = hasProj ? `
-      <div class="r-section">
-        <div class="r-section-title">Projects</div>
-        ${d.projects.map(p=>`<div class="proj-item"><div class="proj-name" contenteditable="true">${esc(p.name)}</div><div class="proj-desc" contenteditable="true">${esc(p.description)}</div></div>`).join('')}
-      </div>` : '';
+    var projHTML = hasProj ? '<div class="r-section"><div class="r-section-title">Projects</div>'+d.projects.map(function(p){ return '<div class="proj-item"><div class="proj-name" contenteditable="true">'+esc(p.name)+'</div><div class="proj-desc" contenteditable="true">'+esc(p.description)+'</div></div>'; }).join('')+'</div>' : '';
 
-    const certHTML = hasCert ? `
-      <div class="r-section">
-        <div class="r-section-title">Certifications</div>
-        ${d.certifications.map(c=>`<div class="cert-item"><div class="cert-name" contenteditable="true">${esc(c.name)}</div><div class="cert-org" contenteditable="true">${esc(c.organization)}</div><div class="cert-yr">${esc(c.year)}</div></div>`).join('')}
-      </div>` : '';
+    var certHTML = hasCert ? '<div class="r-section"><div class="r-section-title">Certifications</div>'+d.certifications.map(function(c){ return '<div class="cert-item"><div class="cert-name" contenteditable="true">'+esc(c.name)+'</div><div class="cert-org" contenteditable="true">'+esc(c.organization)+'</div><div class="cert-yr">'+esc(c.year)+'</div></div>'; }).join('')+'</div>' : '';
 
-    document.getElementById('previewWrap').innerHTML = `
-      <div class="resume-page">
-        <div class="r-header">
-          <div class="r-logo-row">${logoHTML}<span style="font-size:10px;opacity:0.6;font-family:Calibri,sans-serif;">Confidential CV</span></div>
-          <div class="r-name" contenteditable="true">${esc(d.name)}</div>
-          <div class="r-role" contenteditable="true">${esc(d.designation)}</div>
-          <div class="r-contacts">
-            ${d.email?`<span><i class="fa-solid fa-envelope"></i>${esc(d.email)}</span>`:''}
-            ${d.phone?`<span><i class="fa-solid fa-phone"></i>${esc(d.phone)}</span>`:''}
-            ${d.location?`<span><i class="fa-solid fa-location-dot"></i>${esc(d.location)}</span>`:''}
-          </div>
-        </div>
-        <div class="r-body">
-          <div class="r-section">
-            <div class="r-section-title">Professional Summary</div>
-            <div class="r-summary" contenteditable="true">${esc(d.summary)}</div>
-          </div>
-          <div class="r-section">
-            <div class="r-section-title">Professional Experience</div>
-            ${expHTML}
-          </div>
-          ${projHTML}
-          <div class="r-section">
-            <div class="r-section-title">Education</div>
-            ${(d.education||[]).map(e=>`<div class="edu-item"><div class="edu-deg" contenteditable="true">${esc(e.degree)}</div><div class="edu-school" contenteditable="true">${esc(e.institution)}</div><div class="edu-yr">${esc(e.year)}</div></div>`).join('')}
-          </div>
-          ${certHTML}
-          <div class="r-section">
-            <div class="r-section-title">Skills</div>
-            <ul class="skills-grid">${(d.skills||[]).map(s=>`<li contenteditable="true">${esc(s)}</li>`).join('')}</ul>
-          </div>
-        </div>
-        <div class="r-footer">${logoHTML}<span style="font-size:10px;color:#aaa;font-family:Calibri,sans-serif;">Formatted by Simpalm</span></div>
-      </div>`;
+    var footerLogo = logoDataUrl ? '<img src="'+logoDataUrl+'" alt="Simpalm" />' : '<span class="r-footer-text">SIMPALM</span>';
+
+    document.getElementById('previewWrap').innerHTML =
+      '<div class="resume-page">' +
+        '<div class="r-header">' +
+          '<div class="r-logo-row">' + getLogoHTML() + '<span style="font-size:10px;color:#bbb;font-family:Calibri,sans-serif;">Confidential CV</span></div>' +
+          '<div class="r-name" contenteditable="true">'+esc(d.name)+'</div>' +
+          '<div class="r-role" contenteditable="true">'+esc(d.designation)+'</div>' +
+        '</div>' +
+        '<div class="r-body">' +
+          '<div class="r-section"><div class="r-section-title">Professional Summary</div><div class="r-summary" contenteditable="true">'+esc(d.summary)+'</div></div>' +
+          '<div class="r-section"><div class="r-section-title">Professional Experience</div>'+expHTML+'</div>' +
+          projHTML +
+          '<div class="r-section"><div class="r-section-title">Education</div>'+(d.education||[]).map(function(e){ return '<div class="edu-item"><div class="edu-deg" contenteditable="true">'+esc(e.degree)+'</div><div class="edu-school" contenteditable="true">'+esc(e.institution)+'</div><div class="edu-yr">'+esc(e.year)+'</div></div>'; }).join('')+'</div>' +
+          certHTML +
+          '<div class="r-section"><div class="r-section-title">Skills</div><ul class="skills-grid">'+(d.skills||[]).map(function(s){ return '<li contenteditable="true">'+esc(s)+'</li>'; }).join('')+'</ul></div>' +
+        '</div>' +
+        '<div class="r-footer">'+footerLogo+'<span style="font-size:10px;color:#bbb;font-family:Calibri,sans-serif;">Formatted by Simpalm</span></div>' +
+      '</div>';
   }
 
-  // Downloads
-  async function downloadResume(format) {
-    if (!resumeData) return;
-    if (format === 'pdf') await downloadPdf();
-    else await downloadDocx();
-  }
+  function downloadResume(fmt) { if (!resumeData) return; if (fmt==='pdf') downloadPdf(); else downloadDocx(); }
 
   async function downloadPdf() {
     setStatus('Generating PDF…', true);
-    const { jsPDF } = window.jspdf;
-    const d = resumeData;
-    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-    const W = doc.internal.pageSize.getWidth();
-    const H = doc.internal.pageSize.getHeight();
-    const ml = 40, mr = 40;
-    const usable = W - ml - mr;
-    let y = 0;
+    try {
+      var jsPDF = window.jspdf.jsPDF;
+      var d = resumeData;
+      var doc = new jsPDF({ unit:'pt', format:'a4' });
+      var W = doc.internal.pageSize.getWidth();
+      var H = doc.internal.pageSize.getHeight();
+      var ml=50, mr=50, usable=W-ml-mr, y=0;
 
-    const logo = (xPos, yPos, light) => {
-      doc.setFillColor(light ? 255 : 26, light ? 255 : 82, light ? 255 : 118);
-      doc.roundedRect(xPos, yPos - 10, 18, 14, 2, 2, 'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(7);
-      doc.setTextColor(light ? 26 : 255, light ? 82 : 255, light ? 118 : 255);
-      doc.text('S', xPos + 5, yPos); 
-      doc.setFontSize(8); doc.setTextColor(light ? 26 : 255, light ? 82 : 255, light ? 118 : 255);
-      doc.text('SIMPALM', xPos + 22, yPos);
-    };
-
-    const addHeader = (isFirst) => {
-      doc.setFillColor(26, 82, 118);
-      if (isFirst) {
-        doc.rect(0, 0, W, 88, 'F');
-        doc.setTextColor(255,255,255);
-        logo(ml, 18, false);
-        doc.setFont('helvetica','bold'); doc.setFontSize(18);
-        doc.text(d.name || '', ml, 46);
-        doc.setFont('helvetica','normal'); doc.setFontSize(10);
-        doc.text(d.designation || '', ml, 62);
-        const contacts = [d.email, d.phone, d.location].filter(Boolean).join('   ');
-        doc.setFontSize(8); doc.text(contacts, ml, 76);
-        doc.setTextColor(0,0,0);
-        y = 104;
-      } else {
-        doc.rect(0, 0, W, 22, 'F');
-        doc.setTextColor(255,255,255);
-        logo(ml, 16, false);
-        doc.setFont('helvetica','normal'); doc.setFontSize(8);
-        doc.text(d.name || '', W - mr, 16, { align: 'right' });
-        doc.setTextColor(0,0,0);
-        y = 32;
-      }
-    };
-
-    const checkPage = (need) => {
-      if (y + need > H - 30) {
-        addFooter();
-        doc.addPage();
-        addHeader(false);
-      }
-    };
-
-    const addFooter = () => {
-      const pg = doc.internal.getCurrentPageInfo().pageNumber;
-      doc.setFillColor(248,249,251);
-      doc.rect(0, H - 22, W, 22, 'F');
-      doc.setDrawColor(220,220,220); doc.setLineWidth(0.5);
-      doc.line(0, H - 22, W, H - 22);
-      logo(ml, H - 8, true);
-      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(170,170,170);
-      doc.text('Formatted by Simpalm · Page ' + pg, W - mr, H - 8, { align: 'right' });
-    };
-
-    const secTitle = (title) => {
-      checkPage(28);
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(26,82,118);
-      doc.text(title.toUpperCase(), ml, y);
-      doc.setDrawColor(26,82,118); doc.setLineWidth(1);
-      doc.line(ml, y + 3, ml + usable, y + 3);
-      doc.setTextColor(0,0,0); y += 16;
-    };
-
-    const bodyTxt = (txt, indent=0) => {
-      doc.setFont('helvetica','normal'); doc.setFontSize(9);
-      const lines = doc.splitTextToSize(txt || '', usable - indent);
-      lines.forEach(l => { checkPage(13); doc.text(l, ml + indent, y); y += 13; });
-    };
-
-    addHeader(true);
-
-    secTitle('Professional Summary');
-    bodyTxt(d.summary); y += 8;
-
-    secTitle('Professional Experience');
-    (d.experience||[]).forEach(e => {
-      checkPage(50);
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(0,0,0);
-      doc.text((e.designation||'').toUpperCase(), ml, y); y += 14;
-      doc.setFontSize(11); doc.text((e.company||'').toUpperCase(), ml, y); y += 13;
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(120,120,120);
-      doc.text(`${e.startYear||''} – ${e.endYear||''}`, ml, y); doc.setTextColor(0,0,0); y += 12;
-      (e.responsibilities||[]).forEach(r => {
-        checkPage(14); doc.text('•', ml+4, y);
-        const lines = doc.splitTextToSize(r, usable-16);
-        lines.forEach((l,i)=>{ if(i>0)checkPage(13); doc.text(l, ml+14, y); y+=13; });
-      });
-      y += 6;
-    });
-
-    if (d.projects?.length && d.projects[0].name) {
-      secTitle('Projects');
-      d.projects.forEach(p => {
-        checkPage(24);
+      function drawLogo(lx, ly, lh) {
+        if (logoDataUrl) {
+          try { doc.addImage(logoDataUrl, lx, ly-lh, lh*3.5, lh); return; } catch(e){}
+        }
         doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(26,82,118);
-        doc.text(p.name||'', ml, y); y += 12;
-        doc.setTextColor(0,0,0); bodyTxt(p.description,0); y += 4;
-      }); y += 4;
-    }
+        doc.text('SIMPALM', lx, ly);
+      }
 
-    secTitle('Education');
-    (d.education||[]).forEach(e => {
-      checkPage(44);
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(0,0,0);
-      doc.text((e.degree||'').toUpperCase(), ml, y); y += 13;
-      doc.setFont('helvetica','normal'); doc.setFontSize(9);
-      doc.text(e.institution||'', ml, y); y += 12;
-      doc.setTextColor(120,120,120); doc.text(e.year||'', ml, y); doc.setTextColor(0,0,0); y += 14;
-    });
+      function drawHeader(first) {
+        doc.setFillColor(255,255,255); doc.rect(0,0,W,first?82:26,'F');
+        doc.setDrawColor(26,82,118); doc.setLineWidth(first?1.5:0.8);
+        doc.line(0,first?82:26,W,first?82:26);
+        if (first) {
+          drawLogo(ml,20,16);
+          doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(20,20,20);
+          doc.text(d.name||'',ml,50);
+          doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(80,80,80);
+          doc.text(d.designation||'',ml,66);
+          y = 98;
+        } else {
+          drawLogo(ml,18,12);
+          doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(140,140,140);
+          doc.text(d.name||'',W-mr,18,{align:'right'});
+          y = 36;
+        }
+        doc.setTextColor(0,0,0);
+      }
 
-    if (d.certifications?.length && d.certifications[0].name) {
-      secTitle('Certifications');
-      d.certifications.forEach(c => {
-        checkPage(44);
-        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(0,0,0);
-        doc.text((c.name||'').toUpperCase(), ml, y); y += 13;
-        doc.setFont('helvetica','normal'); doc.setFontSize(9);
-        doc.text(c.organization||'', ml, y); y += 12;
-        doc.setTextColor(120,120,120); doc.text(c.year||'', ml, y); doc.setTextColor(0,0,0); y += 14;
+      function drawFooter() {
+        doc.setFillColor(255,255,255); doc.rect(0,H-26,W,26,'F');
+        doc.setDrawColor(200,200,200); doc.setLineWidth(0.5); doc.line(0,H-26,W,H-26);
+        drawLogo(ml,H-10,12);
+        doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(190,190,190);
+        doc.text('Formatted by Simpalm',W-mr,H-10,{align:'right'});
+      }
+
+      function chk(need) {
+        if (y+need > H-38) { drawFooter(); doc.addPage(); drawHeader(false); }
+      }
+
+      function secT(title) {
+        chk(30); y+=4;
+        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(26,82,118);
+        doc.text(title.toUpperCase(),ml,y);
+        doc.setDrawColor(26,82,118); doc.setLineWidth(0.8); doc.line(ml,y+3,ml+usable,y+3);
+        doc.setTextColor(0,0,0); y+=16;
+      }
+
+      function bodyT(txt, indent) {
+        indent = indent||0;
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(50,50,50);
+        var lines = doc.splitTextToSize(txt||'', usable-indent);
+        lines.forEach(function(l){ chk(13); doc.text(l,ml+indent,y); y+=13; });
+        doc.setTextColor(0,0,0);
+      }
+
+      drawHeader(true);
+
+      secT('Professional Summary');
+      bodyT(d.summary); y+=8;
+
+      secT('Professional Experience');
+      (d.experience||[]).forEach(function(e) {
+        chk(55);
+        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+        doc.text((e.designation||'').toUpperCase(),ml,y); y+=14;
+        doc.text((e.company||'').toUpperCase(),ml,y); y+=13;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(140,140,140);
+        doc.text((e.startYear||'')+' \u2013 '+(e.endYear||''),ml,y); doc.setTextColor(0,0,0); y+=12;
+        (e.responsibilities||[]).forEach(function(r) {
+          chk(14); doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(50,50,50);
+          doc.text('\u2022',ml+4,y);
+          var ls=doc.splitTextToSize(r,usable-18);
+          ls.forEach(function(l,i){ if(i>0)chk(13); doc.text(l,ml+14,y); y+=13; });
+        });
+        doc.setTextColor(0,0,0); y+=8;
       });
-    }
 
-    secTitle('Skills');
-    const skills = d.skills||[];
-    const half = Math.ceil(skills.length/2);
-    const colW = usable/2;
-    let sy = y;
-    skills.slice(0,half).forEach(s => { checkPage(13); doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text('• '+s, ml, sy); sy+=13; });
-    let sy2 = y;
-    skills.slice(half).forEach(s => { doc.text('• '+s, ml+colW, sy2); sy2+=13; });
+      if (d.projects&&d.projects.length&&d.projects[0].name) {
+        secT('Projects');
+        d.projects.forEach(function(p) {
+          chk(26); doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,82,118);
+          doc.text(p.name||'',ml,y); y+=13; doc.setTextColor(0,0,0); bodyT(p.description); y+=4;
+        }); y+=4;
+      }
 
-    const totalPages = doc.internal.getNumberOfPages();
-    for (let p = 1; p <= totalPages; p++) { doc.setPage(p); addFooter(); }
+      secT('Education');
+      (d.education||[]).forEach(function(e) {
+        chk(46);
+        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+        doc.text((e.degree||'').toUpperCase(),ml,y); y+=13;
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(60,60,60);
+        doc.text(e.institution||'',ml,y); y+=12;
+        doc.setFontSize(9); doc.setTextColor(140,140,140);
+        doc.text(e.year||'',ml,y); doc.setTextColor(0,0,0); y+=14;
+      });
 
-    doc.save((d.name||'resume').replace(/\s+/g,'_')+'_Simpalm.pdf');
-    setStatus('PDF downloaded ✓');
+      if (d.certifications&&d.certifications.length&&d.certifications[0].name) {
+        secT('Certifications');
+        d.certifications.forEach(function(c) {
+          chk(46);
+          doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+          doc.text((c.name||'').toUpperCase(),ml,y); y+=13;
+          doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(60,60,60);
+          doc.text(c.organization||'',ml,y); y+=12;
+          doc.setFontSize(9); doc.setTextColor(140,140,140);
+          doc.text(c.year||'',ml,y); doc.setTextColor(0,0,0); y+=14;
+        });
+      }
+
+      secT('Skills');
+      var skills=d.skills||[], half=Math.ceil(skills.length/2), cw=usable/2, sy=y;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(50,50,50);
+      skills.slice(0,half).forEach(function(s,i){ chk(13); doc.text('\u2022 '+s,ml,sy+i*13); });
+      skills.slice(half).forEach(function(s,i){ doc.text('\u2022 '+s,ml+cw,sy+i*13); });
+
+      var tot=doc.internal.getNumberOfPages();
+      for(var p=1;p<=tot;p++){ doc.setPage(p); drawFooter(); }
+
+      doc.save((d.name||'resume').replace(/\s+/g,'_')+'_Simpalm.pdf');
+      setStatus('PDF downloaded ✓');
+    } catch(err) { setStatus('PDF error: '+err.message); console.error(err); }
   }
 
   async function downloadDocx() {
     setStatus('Generating DOCX…', true);
-    const { Document, Packer, Paragraph, TextRun, Header, Footer, AlignmentType } = window.docx;
-    const d = resumeData;
+    try {
+      var D = window.docx;
+      if (!D || !D.Document) throw new Error('DOCX library not available. Please refresh the page.');
+      var d = resumeData;
+      var Document=D.Document, Packer=D.Packer, Paragraph=D.Paragraph, TextRun=D.TextRun;
+      var Header=D.Header, Footer=D.Footer, AlignmentType=D.AlignmentType, BorderStyle=D.BorderStyle, ImageRun=D.ImageRun;
 
-    const logoP = () => new Paragraph({ children: [new TextRun({ text: 'SIMPALM', bold:true, color:'1a5276', font:'Calibri', size:18 })], spacing:{after:60} });
+      function secPara(title) {
+        return new Paragraph({
+          children:[new TextRun({text:title.toUpperCase(),bold:true,color:'1a5276',font:'Calibri',size:28})],
+          border:{bottom:{style:BorderStyle.SINGLE,size:8,color:'1a5276'}},
+          spacing:{before:200,after:100}
+        });
+      }
 
-    const secT = (t) => new Paragraph({
-      children:[new TextRun({ text:t.toUpperCase(), bold:true, color:'1a5276', font:'Calibri', size:28 })],
-      border:{ bottom:{ style:'single', size:6, color:'1a5276' } },
-      spacing:{ before:160, after:80 }
-    });
+      function makeLogoPara() {
+        if (logoDataUrl) {
+          try {
+            var base64 = logoDataUrl.split(',')[1];
+            var ext = logoDataUrl.toLowerCase().indexOf('png')>-1 ? 'png' : 'jpg';
+            return new Paragraph({
+              children:[new ImageRun({data:base64,transformation:{width:110,height:32},type:ext})],
+              spacing:{after:60}
+            });
+          } catch(e){}
+        }
+        return new Paragraph({
+          children:[new TextRun({text:'SIMPALM',bold:true,color:'1a5276',font:'Calibri',size:22})],
+          spacing:{after:60}
+        });
+      }
 
-    const children = [
-      logoP(),
-      new Paragraph({ children:[new TextRun({ text:d.name||'', bold:true, font:'Calibri', size:44, color:'1a5276' })], spacing:{after:40} }),
-      new Paragraph({ children:[new TextRun({ text:d.designation||'', font:'Calibri', size:24 })], spacing:{after:40} }),
-      new Paragraph({ children:[new TextRun({ text:[d.email,d.phone,d.location].filter(Boolean).join('   '), font:'Calibri', size:18, color:'777777' })], spacing:{after:120} }),
-      secT('Professional Summary'),
-      new Paragraph({ children:[new TextRun({ text:d.summary||'', font:'Calibri', size:24 })], spacing:{after:120} }),
-      secT('Professional Experience'),
-      ...(d.experience||[]).flatMap(e=>[
-        new Paragraph({ children:[new TextRun({ text:(e.designation||'').toUpperCase(), bold:true, font:'Calibri', size:28 })], spacing:{before:100} }),
-        new Paragraph({ children:[new TextRun({ text:(e.company||'').toUpperCase(), bold:true, font:'Calibri', size:28, color:'333333' })] }),
-        new Paragraph({ children:[new TextRun({ text:`${e.startYear||''} – ${e.endYear||''}`, font:'Calibri', size:20, color:'888888' })], spacing:{after:40} }),
-        ...(e.responsibilities||[]).map(r=>new Paragraph({ children:[new TextRun({ text:r, font:'Calibri', size:24 })], bullet:{level:0}, spacing:{after:20} }))
-      ]),
-      ...(d.projects?.length&&d.projects[0].name ? [
-        secT('Projects'),
-        ...(d.projects.flatMap(p=>[
-          new Paragraph({ children:[new TextRun({ text:p.name||'', bold:true, color:'1a5276', font:'Calibri', size:24 })], spacing:{before:80} }),
-          new Paragraph({ children:[new TextRun({ text:p.description||'', font:'Calibri', size:24 })], spacing:{after:40} })
-        ]))
-      ] : []),
-      secT('Education'),
-      ...(d.education||[]).flatMap(e=>[
-        new Paragraph({ children:[new TextRun({ text:(e.degree||'').toUpperCase(), bold:true, font:'Calibri', size:28 })], spacing:{before:80} }),
-        new Paragraph({ children:[new TextRun({ text:e.institution||'', font:'Calibri', size:24 })] }),
-        new Paragraph({ children:[new TextRun({ text:e.year||'', font:'Calibri', size:20, color:'888888' })], spacing:{after:60} })
-      ]),
-      ...(d.certifications?.length&&d.certifications[0].name ? [
-        secT('Certifications'),
-        ...(d.certifications.flatMap(c=>[
-          new Paragraph({ children:[new TextRun({ text:(c.name||'').toUpperCase(), bold:true, font:'Calibri', size:28 })], spacing:{before:80} }),
-          new Paragraph({ children:[new TextRun({ text:c.organization||'', font:'Calibri', size:24 })] }),
-          new Paragraph({ children:[new TextRun({ text:c.year||'', font:'Calibri', size:20, color:'888888' })], spacing:{after:60} })
-        ]))
-      ] : []),
-      secT('Skills'),
-      ...(d.skills||[]).map(s=>new Paragraph({ children:[new TextRun({ text:s, font:'Calibri', size:24 })], bullet:{level:0}, spacing:{after:20} }))
-    ];
+      var logoPara = makeLogoPara();
+      var footerLogoPara = makeLogoPara();
 
-    const doc = new Document({
-      sections:[{
-        headers:{ default: new Header({ children:[logoP()] }) },
-        footers:{ default: new Footer({ children:[new Paragraph({ children:[new TextRun({ text:'SIMPALM · Formatted by Simpalm', bold:true, color:'1a5276', font:'Calibri', size:16 })], alignment:AlignmentType.CENTER })] }) },
-        children
-      }]
-    });
+      var kids = [
+        logoPara,
+        new Paragraph({children:[new TextRun({text:d.name||'',bold:true,font:'Calibri',size:44,color:'111111'})],spacing:{after:40}}),
+        new Paragraph({children:[new TextRun({text:d.designation||'',font:'Calibri',size:24,color:'555555'})],spacing:{after:160}}),
+        secPara('Professional Summary'),
+        new Paragraph({children:[new TextRun({text:d.summary||'',font:'Calibri',size:24,color:'333333'})],spacing:{after:160}}),
+        secPara('Professional Experience')
+      ];
 
-    const buf = await Packer.toBuffer(doc);
-    const blob = new Blob([buf], { type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href=url;
-    a.download=(d.name||'resume').replace(/\s+/g,'_')+'_Simpalm.docx';
-    a.click(); URL.revokeObjectURL(url);
-    setStatus('DOCX downloaded ✓');
+      (d.experience||[]).forEach(function(e) {
+        kids.push(new Paragraph({children:[new TextRun({text:(e.designation||'').toUpperCase(),bold:true,font:'Calibri',size:28,color:'111111'})],spacing:{before:120}}));
+        kids.push(new Paragraph({children:[new TextRun({text:(e.company||'').toUpperCase(),bold:true,font:'Calibri',size:28,color:'333333'})]}));
+        kids.push(new Paragraph({children:[new TextRun({text:(e.startYear||'')+' \u2013 '+(e.endYear||''),font:'Calibri',size:20,color:'999999'})],spacing:{after:40}}));
+        (e.responsibilities||[]).forEach(function(r) {
+          kids.push(new Paragraph({children:[new TextRun({text:r,font:'Calibri',size:24,color:'333333'})],bullet:{level:0},spacing:{after:20}}));
+        });
+      });
+
+      if (d.projects&&d.projects.length&&d.projects[0].name) {
+        kids.push(secPara('Projects'));
+        d.projects.forEach(function(p) {
+          kids.push(new Paragraph({children:[new TextRun({text:p.name||'',bold:true,color:'1a5276',font:'Calibri',size:24})],spacing:{before:80}}));
+          kids.push(new Paragraph({children:[new TextRun({text:p.description||'',font:'Calibri',size:24,color:'333333'})],spacing:{after:60}}));
+        });
+      }
+
+      kids.push(secPara('Education'));
+      (d.education||[]).forEach(function(e) {
+        kids.push(new Paragraph({children:[new TextRun({text:(e.degree||'').toUpperCase(),bold:true,font:'Calibri',size:28,color:'111111'})],spacing:{before:80}}));
+        kids.push(new Paragraph({children:[new TextRun({text:e.institution||'',font:'Calibri',size:24,color:'333333'})]}));
+        kids.push(new Paragraph({children:[new TextRun({text:e.year||'',font:'Calibri',size:20,color:'999999'})],spacing:{after:80}}));
+      });
+
+      if (d.certifications&&d.certifications.length&&d.certifications[0].name) {
+        kids.push(secPara('Certifications'));
+        d.certifications.forEach(function(c) {
+          kids.push(new Paragraph({children:[new TextRun({text:(c.name||'').toUpperCase(),bold:true,font:'Calibri',size:28,color:'111111'})],spacing:{before:80}}));
+          kids.push(new Paragraph({children:[new TextRun({text:c.organization||'',font:'Calibri',size:24,color:'333333'})]}));
+          kids.push(new Paragraph({children:[new TextRun({text:c.year||'',font:'Calibri',size:20,color:'999999'})],spacing:{after:80}}));
+        });
+      }
+
+      kids.push(secPara('Skills'));
+      (d.skills||[]).forEach(function(s) {
+        kids.push(new Paragraph({children:[new TextRun({text:s,font:'Calibri',size:24,color:'333333'})],bullet:{level:0},spacing:{after:20}}));
+      });
+
+      var docFile = new Document({
+        sections:[{
+          properties:{page:{margin:{top:800,right:800,bottom:800,left:800}}},
+          headers:{default:new Header({children:[makeLogoPara()]})},
+          footers:{default:new Footer({children:[new Paragraph({children:[new TextRun({text:'SIMPALM  |  Formatted by Simpalm',bold:true,color:'1a5276',font:'Calibri',size:16})],alignment:AlignmentType.CENTER})]})},
+          children:kids
+        }]
+      });
+
+      var buf = await Packer.toBuffer(docFile);
+      var blob = new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href=url; a.download=(d.name||'resume').replace(/\s+/g,'_')+'_Simpalm.docx';
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },1000);
+      setStatus('DOCX downloaded ✓');
+    } catch(err) { setStatus('DOCX error: '+err.message); console.error('DOCX error:',err); }
   }
 </script>
 </body>
