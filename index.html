@@ -99,6 +99,10 @@
     [contenteditable]:hover{outline:1.5px dashed #1a5276;border-radius:3px;cursor:text}
     [contenteditable]:focus{outline:2px solid #1a5276;background:#f0f5fc;border-radius:3px}
     .edit-hint{font-size:10px;color:#999;text-align:center;margin-top:8px;font-style:italic}
+    .add-line-btn{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:4px 10px;font-size:11px;color:#1a5276;background:#eaf2fb;border:1px dashed #1a5276;border-radius:6px;cursor:pointer;font-family:Calibri,sans-serif}
+    .add-line-btn:hover{background:#d6eaf8}
+    .add-section-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:5px 12px;font-size:11px;color:#fff;background:#1a5276;border:none;border-radius:6px;cursor:pointer;font-family:Calibri,sans-serif}
+    .add-section-btn:hover{background:#154360}
   </style>
 </head>
 <body>
@@ -156,7 +160,7 @@
 
     <div>
       <div class="section-label">Role / Context <span style="font-weight:400;text-transform:none;font-size:10px">(optional)</span></div>
-      <textarea class="role-input" id="roleHint" placeholder="e.g. Senior React Developer, 8 yrs fintech…"></textarea>
+      <textarea class="role-input" id="roleHint" placeholder="e.g. Add extra skills, highlight specific industry, rephrase summary, add missing info from the candidate…"></textarea>
     </div>
 
     <button class="btn-format" id="formatBtn" disabled onclick="formatResume()">
@@ -290,13 +294,13 @@
     document.getElementById('previewWrap').innerHTML = '<div class="placeholder"><i class="fa-solid fa-spinner spin" style="font-size:36px;opacity:.4"></i><h3>Formatting in progress…</h3><p>Claude AI is reading and formatting the entire resume. This takes about 15 seconds.</p></div>';
 
     var roleHint = document.getElementById('roleHint').value.trim();
-    var prompt = 'You are a professional resume formatter for Simpalm staffing company. Read the COMPLETE resume text below and return ONLY valid JSON — no explanation, no markdown, no code fences.\n\nEXTRACTION RULES (follow strictly):\n1. name: full name of candidate\n2. designation: their current or most recent job title\n3. email, phone, location: set all to empty string ""\n4. summary: write 3-4 professional sentences based on their actual role, years of experience, key tools/technologies, industries served, and notable achievements\n5. experience: Extract EVERY single job. For each job include designation, company, startYear, endYear (use "Present" if current), and responsibilities array with at least 4 bullet points describing actual work done\n6. projects: Extract ALL projects mentioned with name and description\n7. education: Extract EVERY qualification — degrees, diplomas, courses. Each needs degree (full name), institution (full name), year\n8. languages: Extract ALL languages mentioned with name and proficiency level (e.g. Native, Fluent, Intermediate, Basic). If no level given use "Professional"\n9. certifications: Extract EVERY certification, credential, online course certificate. Each needs name (full), organization (issuing body), year (or "" if not mentioned)\n10. skills: ALL technical skills, tools, frameworks, software, soft skills as flat string array\n\nDO NOT skip or merge any entries. Extract everything.\n\nReturn ONLY this exact JSON (arrays can have many items):\n{"name":"","designation":"","email":"","phone":"","location":"","summary":"","experience":[{"designation":"","company":"","startYear":"","endYear":"","responsibilities":[]}],"projects":[{"name":"","description":""}],"education":[{"degree":"","institution":"","year":""}],"languages":[{"name":"","level":""}],"certifications":[{"name":"","organization":"","year":""}],"skills":[]}\n\nResume text:\n'+extractedText.substring(0,8000);
+    var prompt = 'You are a professional resume formatter for Simpalm staffing company. Your job is to COPY ALL content from the resume exactly — do not skip, summarize, or drop anything.\n\nSTRICT EXTRACTION RULES:\n1. name: full candidate name\n2. designation: current or most recent job title\n3. email, phone, location: set to empty string ""\n4. summary: write 3-4 professional sentences using their actual role, years of experience, tools, industries, and achievements' + (roleHint ? '. ALSO incorporate this additional context from the recruiter: ' + roleHint : '') + '\n5. experience: Copy EVERY SINGLE job role exactly as written. For each job copy ALL responsibilities/bullet points word for word from the resume — do not invent or skip any. Include designation, company, startYear, endYear (Present if current), and ALL responsibilities listed.\n6. projects: Copy ALL projects with their full names and descriptions exactly as written.\n7. education: Copy EVERY qualification. Sort from MOST RECENT to OLDEST (newest year first). Each entry needs: degree (full name as written), institution (full name), year.\n8. languages: Copy ALL languages with proficiency level. If no level given write Professional.\n9. certifications: Copy EVERY single certification exactly as written — do not skip any. Each needs: name (full name as written), organization (issuing body), year (empty string if not mentioned).\n10. skills: Copy ALL skills, tools, technologies exactly as listed.\n\nCRITICAL: Copy content verbatim. Do NOT summarize, shorten, merge, or drop any entries. The output must contain everything from the input.\n\nReturn ONLY this JSON (arrays must be complete):\n{"name":"","designation":"","email":"","phone":"","location":"","summary":"","experience":[{"designation":"","company":"","startYear":"","endYear":"","responsibilities":[]}],"projects":[{"name":"","description":""}],"education":[{"degree":"","institution":"","year":""}],"languages":[{"name":"","level":""}],"certifications":[{"name":"","organization":"","year":""}],"skills":[]}\n\nFull resume text:\n'+extractedText.substring(0,9000);
 
     try{
       var res = await fetch('/api/format',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:3000,messages:[{role:'user',content:prompt}]})
+        body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:4000,messages:[{role:'user',content:prompt}]})
       });
       var resText = await res.text();
       if(!resText||resText.trim()==='') throw new Error('Empty response. Check ANTHROPIC_API_KEY on Vercel → Settings → Environment Variables, then Redeploy.');
@@ -330,17 +334,19 @@
     var hasCert = d.certifications&&d.certifications.length&&d.certifications[0].name;
     var hasLang = d.languages&&d.languages.length&&d.languages[0].name;
 
-    var expHTML = (d.experience||[]).map(function(e){
-      return '<div class="exp-item">'+
+    var expHTML = (d.experience||[]).map(function(e, ei){
+      return '<div class="exp-item" data-exp-idx="'+ei+'">'+
         '<div class="exp-desig" contenteditable="true">'+esc(e.designation)+'</div>'+
         '<div class="exp-co" contenteditable="true">'+esc(e.company)+'</div>'+
         '<div class="exp-yr">'+esc(e.startYear)+' – '+esc(e.endYear)+'</div>'+
         '<ul class="exp-list">'+(e.responsibilities||[]).map(function(r){return '<li contenteditable="true">'+esc(r)+'</li>';}).join('')+'</ul>'+
+        '<button class="add-line-btn" onclick="addBullet(this,\'exp-list\')"><i class="fa-solid fa-plus"></i> Add bullet point</button>'+
         '</div>';
     }).join('');
 
     var projHTML = hasProj ? '<div class="r-section"><div class="r-section-title">Projects</div>'+
-      d.projects.map(function(p){return '<div class="proj-item"><div class="proj-name" contenteditable="true">'+esc(p.name)+'</div><div class="proj-desc" contenteditable="true">'+esc(p.description)+'</div></div>';}).join('')+
+      d.projects.map(function(p){return '<div class="proj-item"><div class="proj-name" contenteditable="true">'+esc(p.name)+'</div><div class="proj-desc" contenteditable="true">'+esc(p.description)+'</div><button class="add-line-btn" onclick="addProjectLine(this)"><i class="fa-solid fa-plus"></i> Add line</button></div>';}).join('')+
+      '<button class="add-section-btn" onclick="addProject(this)"><i class="fa-solid fa-plus"></i> Add project</button>'+
       '</div>' : '';
 
     var eduHTML = '<div class="r-section"><div class="r-section-title">Education</div>'+
@@ -378,6 +384,48 @@
   }
 
   function downloadResume(fmt){ if(!resumeData) return; if(fmt==='pdf') downloadPdf(); else downloadDocx(); }
+
+  // Add a new empty bullet point to an experience responsibility list
+  function addBullet(btn, listClass){
+    var expItem = btn.closest ? btn.closest('.exp-item') : btn.parentNode;
+    var ul = expItem.querySelector('.'+listClass);
+    var li = document.createElement('li');
+    li.setAttribute('contenteditable','true');
+    li.textContent = 'New bullet point — click to edit';
+    li.style.color = '#999';
+    li.addEventListener('focus', function(){ if(li.style.color==='#999'||li.textContent==='New bullet point — click to edit'){ li.textContent=''; li.style.color=''; } });
+    ul.appendChild(li);
+    li.focus();
+    // Place cursor at end
+    var range = document.createRange();
+    range.selectNodeContents(li);
+    range.collapse(false);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  // Add a new line to a project description
+  function addProjectLine(btn){
+    var projItem = btn.closest ? btn.closest('.proj-item') : btn.parentNode;
+    var desc = projItem.querySelector('.proj-desc');
+    desc.innerHTML += '<div contenteditable="true" style="color:#999;min-height:16px" data-placeholder="New line — click to edit">New line — click to edit</div>';
+    var newDiv = desc.lastChild;
+    newDiv.addEventListener('focus', function(){ if(newDiv.style.color==='rgb(153, 153, 153)'){ newDiv.textContent=''; newDiv.style.color=''; } });
+    if(newDiv.focus) newDiv.focus();
+  }
+
+  // Add a whole new project
+  function addProject(btn){
+    var section = btn.closest ? btn.closest('.r-section') : btn.parentNode;
+    var newProj = document.createElement('div');
+    newProj.className = 'proj-item';
+    newProj.innerHTML = '<div class="proj-name" contenteditable="true" style="color:#999">Project Name — click to edit</div>'+
+      '<div class="proj-desc" contenteditable="true" style="color:#999">Project description — click to edit</div>'+
+      '<button class="add-line-btn" onclick="addProjectLine(this)"><i class=\"fa-solid fa-plus\"></i> Add line</button>';
+    section.insertBefore(newProj, btn);
+    newProj.querySelector('.proj-name').focus();
+  }
 
   // ── PDF DOWNLOAD ──
   async function downloadPdf(){
