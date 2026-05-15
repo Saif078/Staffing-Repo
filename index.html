@@ -89,10 +89,8 @@
     .cert-name{font-size:14px;font-weight:700;text-transform:uppercase;font-family:Calibri,sans-serif;color:#111}
     .cert-org{font-size:12px;color:#333;font-family:Calibri,sans-serif}
     .cert-yr{font-size:12px;color:#888;font-family:Calibri,sans-serif}
-    .skills-grid{list-style:none;padding-left:0;display:flex;flex-direction:column;gap:4px}
-    .skills-grid li{font-size:12px;color:#333;font-family:Calibri,sans-serif;line-height:1.8;display:flex;align-items:flex-start;gap:6px}
-    .skills-grid li::before{content:"•";color:#1a5276;font-weight:700;flex-shrink:0;margin-top:1px}
-    .skills-grid li span{flex:1}
+    .skills-grid{columns:2;gap:16px;list-style:disc;padding-left:18px}
+    .skills-grid li{font-size:12px;color:#333;font-family:Calibri,sans-serif;line-height:1.8}
     .r-footer{padding:8px 32px;border-top:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;background:#fff}
     .r-footer img{height:28px;max-width:100px;object-fit:contain}
     .r-footer-text{font-size:12px;font-weight:900;color:#1a5276;letter-spacing:1.5px}
@@ -103,21 +101,8 @@
     .edit-hint{font-size:10px;color:#999;text-align:center;margin-top:8px;font-style:italic}
     .add-line-btn{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:4px 10px;font-size:11px;color:#1a5276;background:#eaf2fb;border:1px dashed #1a5276;border-radius:6px;cursor:pointer;font-family:Calibri,sans-serif}
     .add-line-btn:hover{background:#d6eaf8}
-    .del-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;font-size:10px;color:#c0392b;background:#fdf2f0;border:1px dashed #e74c3c;border-radius:6px;cursor:pointer;font-family:Calibri,sans-serif;margin-left:6px;flex-shrink:0}
-    .del-btn:hover{background:#fde8e4}
     .add-section-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:5px 12px;font-size:11px;color:#fff;background:#1a5276;border:none;border-radius:6px;cursor:pointer;font-family:Calibri,sans-serif}
     .add-section-btn:hover{background:#154360}
-    .row-actions{display:flex;align-items:center;gap:4px;margin-top:4px;flex-wrap:wrap}
-    .edu-item{margin-bottom:10px;padding:6px 8px;border-radius:4px;border:1px solid transparent}
-    .edu-item:hover{border-color:#e2e8f0;background:#fafafa}
-    .cert-item{margin-bottom:10px;padding:6px 8px;border-radius:4px;border:1px solid transparent}
-    .cert-item:hover{border-color:#e2e8f0;background:#fafafa}
-    .lang-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:4px 6px;border-radius:4px;border:1px solid transparent}
-    .lang-item:hover{border-color:#e2e8f0;background:#fafafa}
-    .exp-item{margin-bottom:14px;padding:6px 8px;border-radius:4px;border:1px solid transparent}
-    .exp-item:hover{border-color:#e2e8f0;background:#fafafa}
-    .bullet-row{display:flex;align-items:flex-start;gap:4px}
-    .bullet-row li{flex:1}
   </style>
 </head>
 <body>
@@ -347,91 +332,34 @@
   function renderPreview(d){
     var hasProj = d.projects&&d.projects.length&&d.projects[0].name;
     var hasCert = d.certifications&&d.certifications.length&&d.certifications[0].name;
+    var hasLang = d.languages&&d.languages.length&&d.languages[0].name;
 
-    // EXPERIENCE — bullets with add + delete
-    var expHTML = (d.experience||[]).map(function(e){
-      var bullets = (e.responsibilities||[]).map(function(r){
-        return '<div class="bullet-row">'+
-          '<li contenteditable="true" style="flex:1">'+esc(r)+'</li>'+
-          '<button class="del-btn" onclick="delRow(this.parentNode)" title="Delete"><i class="fa-solid fa-trash-can"></i></button>'+
-          '</div>';
-      }).join('');
-      return '<div class="exp-item">'+
+    var expHTML = (d.experience||[]).map(function(e, ei){
+      return '<div class="exp-item" data-exp-idx="'+ei+'">'+
         '<div class="exp-desig" contenteditable="true">'+esc(e.designation)+'</div>'+
         '<div class="exp-co" contenteditable="true">'+esc(e.company)+'</div>'+
         '<div class="exp-yr">'+esc(e.startYear)+' – '+esc(e.endYear)+'</div>'+
-        '<ul class="exp-list" style="list-style:disc;padding-left:18px">'+bullets+'</ul>'+
-        '<div class="row-actions">'+
-          '<button class="add-line-btn" onclick="addExpBullet(this)"><i class="fa-solid fa-plus"></i> Add bullet</button>'+
-          '<button class="del-btn" onclick="delExpItem(this)"><i class="fa-solid fa-trash-can"></i> Delete job</button>'+
-        '</div></div>';
+        '<ul class="exp-list">'+(e.responsibilities||[]).map(function(r){return '<li contenteditable="true">'+esc(r)+'</li>';}).join('')+'</ul>'+
+        '<button class="add-line-btn" onclick="addBullet(this,\'exp-list\')"><i class="fa-solid fa-plus"></i> Add bullet point</button>'+
+        '</div>';
     }).join('');
 
-    // PROJECTS
-    var projHTML = '<div class="r-section" id="proj-section"><div class="r-section-title">Projects</div>'+
-      (hasProj ? d.projects.map(function(p){
-        return '<div class="proj-item">'+
-          '<div class="proj-name" contenteditable="true">'+esc(p.name)+'</div>'+
-          '<div class="proj-desc" contenteditable="true">'+esc(p.description)+'</div>'+
-          '<div class="row-actions">'+
-            '<button class="add-line-btn" onclick="addProjectLine(this)"><i class="fa-solid fa-plus"></i> Add line</button>'+
-            '<button class="del-btn" onclick="delRow(this.closest(\'.proj-item\'))"><i class="fa-solid fa-trash-can"></i> Delete</button>'+
-          '</div></div>';
-      }).join('') : '')+
+    var projHTML = hasProj ? '<div class="r-section"><div class="r-section-title">Projects</div>'+
+      d.projects.map(function(p){return '<div class="proj-item"><div class="proj-name" contenteditable="true">'+esc(p.name)+'</div><div class="proj-desc" contenteditable="true">'+esc(p.description)+'</div><button class="add-line-btn" onclick="addProjectLine(this)"><i class="fa-solid fa-plus"></i> Add line</button></div>';}).join('')+
       '<button class="add-section-btn" onclick="addProject(this)"><i class="fa-solid fa-plus"></i> Add project</button>'+
+      '</div>' : '';
+
+    var eduHTML = '<div class="r-section"><div class="r-section-title">Education</div>'+
+      (d.education||[]).map(function(e){return '<div class="edu-item"><div class="edu-deg" contenteditable="true">'+esc(e.degree)+'</div><div class="edu-school" contenteditable="true">'+esc(e.institution)+'</div><div class="edu-yr">'+esc(e.year)+'</div></div>';}).join('')+
       '</div>';
 
-    // EDUCATION
-    var eduHTML = '<div class="r-section" id="edu-section"><div class="r-section-title">Education</div>'+
-      (d.education||[]).map(function(e){
-        return '<div class="edu-item">'+
-          '<div class="edu-deg" contenteditable="true">'+esc(e.degree)+'</div>'+
-          '<div class="edu-school" contenteditable="true">'+esc(e.institution)+'</div>'+
-          '<div class="edu-yr" contenteditable="true">'+esc(e.year)+'</div>'+
-          '<div class="row-actions">'+
-            '<button class="del-btn" onclick="delRow(this.closest(\'.edu-item\'))"><i class="fa-solid fa-trash-can"></i> Delete</button>'+
-          '</div></div>';
-      }).join('')+
-      '<button class="add-section-btn" onclick="addEduItem()"><i class="fa-solid fa-plus"></i> Add education</button>'+
-      '</div>';
+    var langHTML = hasLang ? '<div class="r-section"><div class="r-section-title">Languages</div>'+
+      d.languages.map(function(l){return '<div class="lang-item"><div class="lang-name" contenteditable="true">'+esc(l.name)+'</div><div class="lang-level" contenteditable="true">'+esc(l.level)+'</div></div>';}).join('')+
+      '</div>' : '';
 
-    // LANGUAGES — always shown
-    var langHTML = '<div class="r-section" id="lang-section"><div class="r-section-title">Languages</div>'+
-      (d.languages||[]).filter(function(l){return l.name;}).map(function(l){
-        return '<div class="lang-item">'+
-          '<div class="lang-name" contenteditable="true">'+esc(l.name)+'</div>'+
-          '<div class="lang-level" contenteditable="true">'+esc(l.level)+'</div>'+
-          '<button class="del-btn" onclick="delRow(this.closest(\'.lang-item\'))"><i class="fa-solid fa-trash-can"></i></button>'+
-          '</div>';
-      }).join('')+
-      '<div class="row-actions"><button class="add-section-btn" onclick="addLangItem()"><i class="fa-solid fa-plus"></i> Add language</button></div>'+
-      '</div>';
-
-    // CERTIFICATIONS
-    var certHTML = '<div class="r-section" id="cert-section"><div class="r-section-title">Certifications</div>'+
-      (d.certifications||[]).filter(function(c){return c.name;}).map(function(c){
-        return '<div class="cert-item">'+
-          '<div class="cert-name" contenteditable="true">'+esc(c.name)+'</div>'+
-          '<div class="cert-org" contenteditable="true">'+esc(c.organization)+'</div>'+
-          '<div class="cert-yr" contenteditable="true">'+esc(c.year)+'</div>'+
-          '<div class="row-actions">'+
-            '<button class="del-btn" onclick="delRow(this.closest(\'.cert-item\'))"><i class="fa-solid fa-trash-can"></i> Delete</button>'+
-          '</div></div>';
-      }).join('')+
-      '<button class="add-section-btn" onclick="addCertItem()"><i class="fa-solid fa-plus"></i> Add certification</button>'+
-      '</div>';
-
-    // SKILLS — ALL shown, one per row, each deletable
-    var skillsHTML = '<div class="r-section" id="skills-section"><div class="r-section-title">Skills</div>'+
-      '<ul class="skills-grid">'+
-      (d.skills||[]).map(function(s){
-        return '<li><span contenteditable="true">'+esc(s)+'</span>'+
-          '<button class="del-btn" onclick="delRow(this.closest('li'))" title="Delete"><i class="fa-solid fa-trash-can"></i></button></li>';
-      }).join('')+
-      '</ul>'+
-      '<div class="row-actions" style="margin-top:6px">'+
-        '<button class="add-section-btn" onclick="addSkillItem()"><i class="fa-solid fa-plus"></i> Add skill</button>'+
-      '</div></div>';
+    var certHTML = hasCert ? '<div class="r-section"><div class="r-section-title">Certifications</div>'+
+      d.certifications.map(function(c){return '<div class="cert-item"><div class="cert-name" contenteditable="true">'+esc(c.name)+'</div><div class="cert-org" contenteditable="true">'+esc(c.organization)+'</div><div class="cert-yr">'+esc(c.year)+'</div></div>';}).join('')+
+      '</div>' : '';
 
     var footerLogo = logoDataUrl
       ? '<img src="'+logoDataUrl+'" alt="Simpalm" style="height:28px;max-width:100px;object-fit:contain">'
@@ -447,118 +375,56 @@
         '<div class="r-body">'+
           '<div class="r-section"><div class="r-section-title">Professional Summary</div><div class="r-summary" contenteditable="true">'+esc(d.summary)+'</div></div>'+
           '<div class="r-section"><div class="r-section-title">Professional Experience</div>'+expHTML+'</div>'+
-          projHTML+eduHTML+langHTML+certHTML+skillsHTML+
+          projHTML+eduHTML+langHTML+certHTML+
+          '<div class="r-section"><div class="r-section-title">Skills</div><ul class="skills-grid">'+(d.skills||[]).map(function(s){return '<li contenteditable="true">'+esc(s)+'</li>';}).join('')+'</ul></div>'+
         '</div>'+
         '<div class="r-footer">'+footerLogo+'<span style="font-size:10px;color:#bbb;font-family:Calibri,sans-serif">Formatted by Simpalm</span></div>'+
       '</div>'+
-      '<p class="edit-hint"><i class="fa-solid fa-pencil"></i> Click any text to edit &nbsp;| <i class="fa-solid fa-trash-can" style="color:#c0392b"></i> Red = delete &nbsp;| <i class="fa-solid fa-plus" style="color:#1a5276"></i> Blue = add</p>';
+      '<p class="edit-hint"><i class="fa-solid fa-pencil"></i> Click any text in the resume above to edit it before downloading</p>';
   }
+
   function downloadResume(fmt){ if(!resumeData) return; if(fmt==='pdf') downloadPdf(); else downloadDocx(); }
 
-  // ── HELPER: delete any row/item ──
-  function delRow(el){ if(el && el.parentNode) el.parentNode.removeChild(el); }
-
-  // ── HELPER: delete experience item ──
-  function delExpItem(btn){ var item = btn.closest ? btn.closest('.exp-item') : btn.parentNode.parentNode; delRow(item); }
-
-  // ── HELPER: add bullet to experience ──
-  function addExpBullet(btn){
-    var expItem = btn.closest ? btn.closest('.exp-item') : btn.parentNode.parentNode;
-    var ul = expItem.querySelector('.exp-list');
-    var row = document.createElement('div');
-    row.className = 'bullet-row';
-    row.innerHTML = '<li contenteditable="true" style="flex:1;color:#999">New bullet — click to edit</li>'+
-      '<button class="del-btn" onclick="delRow(this.parentNode)" title="Delete"><i class="fa-solid fa-trash-can"></i></button>';
-    var li = row.querySelector('li');
-    li.addEventListener('focus', function(){ if(li.style.color==='rgb(153, 153, 153)'||li.textContent==='New bullet — click to edit'){li.textContent='';li.style.color='';} });
-    ul.appendChild(row);
+  // Add a new empty bullet point to an experience responsibility list
+  function addBullet(btn, listClass){
+    var expItem = btn.closest ? btn.closest('.exp-item') : btn.parentNode;
+    var ul = expItem.querySelector('.'+listClass);
+    var li = document.createElement('li');
+    li.setAttribute('contenteditable','true');
+    li.textContent = 'New bullet point — click to edit';
+    li.style.color = '#999';
+    li.addEventListener('focus', function(){ if(li.style.color==='#999'||li.textContent==='New bullet point — click to edit'){ li.textContent=''; li.style.color=''; } });
+    ul.appendChild(li);
     li.focus();
+    // Place cursor at end
+    var range = document.createRange();
+    range.selectNodeContents(li);
+    range.collapse(false);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 
-  // ── HELPER: add line to project ──
+  // Add a new line to a project description
   function addProjectLine(btn){
-    var projItem = btn.closest ? btn.closest('.proj-item') : btn.parentNode.parentNode;
+    var projItem = btn.closest ? btn.closest('.proj-item') : btn.parentNode;
     var desc = projItem.querySelector('.proj-desc');
-    var d2 = document.createElement('div');
-    d2.setAttribute('contenteditable','true');
-    d2.style.color='#999';
-    d2.style.minHeight='16px';
-    d2.textContent='New line — click to edit';
-    d2.addEventListener('focus',function(){ if(d2.style.color==='rgb(153, 153, 153)'){d2.textContent='';d2.style.color='';} });
-    desc.parentNode.insertBefore(d2, btn);
-    d2.focus();
+    desc.innerHTML += '<div contenteditable="true" style="color:#999;min-height:16px" data-placeholder="New line — click to edit">New line — click to edit</div>';
+    var newDiv = desc.lastChild;
+    newDiv.addEventListener('focus', function(){ if(newDiv.style.color==='rgb(153, 153, 153)'){ newDiv.textContent=''; newDiv.style.color=''; } });
+    if(newDiv.focus) newDiv.focus();
   }
 
-  // ── HELPER: add new project ──
+  // Add a whole new project
   function addProject(btn){
     var section = btn.closest ? btn.closest('.r-section') : btn.parentNode;
     var newProj = document.createElement('div');
     newProj.className = 'proj-item';
-    newProj.innerHTML =
-      '<div class="proj-name" contenteditable="true" style="color:#999">Project Name — click to edit</div>'+
+    newProj.innerHTML = '<div class="proj-name" contenteditable="true" style="color:#999">Project Name — click to edit</div>'+
       '<div class="proj-desc" contenteditable="true" style="color:#999">Project description — click to edit</div>'+
-      '<div class="row-actions">'+
-        '<button class="add-line-btn" onclick="addProjectLine(this)"><i class="fa-solid fa-plus"></i> Add line</button>'+
-        '<button class="del-btn" onclick="delRow(this.closest(\'.proj-item\'))"><i class="fa-solid fa-trash-can"></i> Delete project</button>'+
-      '</div>';
+      '<button class="add-line-btn" onclick="addProjectLine(this)"><i class=\"fa-solid fa-plus\"></i> Add line</button>';
     section.insertBefore(newProj, btn);
     newProj.querySelector('.proj-name').focus();
-  }
-
-  // ── HELPER: add education entry ──
-  function addEduItem(){
-    var section = document.getElementById('edu-section');
-    var addBtn = section.querySelector('.add-section-btn');
-    var item = document.createElement('div');
-    item.className = 'edu-item';
-    item.innerHTML =
-      '<div class="edu-deg" contenteditable="true" style="color:#999">DEGREE NAME — click to edit</div>'+
-      '<div class="edu-school" contenteditable="true" style="color:#999">University / School name</div>'+
-      '<div class="edu-yr" contenteditable="true" style="color:#999">Year</div>'+
-      '<div class="row-actions"><button class="del-btn" onclick="delRow(this.closest(\'.edu-item\'))"><i class="fa-solid fa-trash-can"></i> Delete</button></div>';
-    section.insertBefore(item, addBtn);
-    item.querySelector('.edu-deg').focus();
-  }
-
-  // ── HELPER: add language entry ──
-  function addLangItem(){
-    var section = document.getElementById('lang-section');
-    var addBtn = section.querySelector('.add-section-btn');
-    var item = document.createElement('div');
-    item.className = 'lang-item';
-    item.innerHTML =
-      '<div class="lang-name" contenteditable="true" style="color:#999;min-width:100px">Language</div>'+
-      '<div class="lang-level" contenteditable="true" style="color:#999">Proficiency level</div>'+
-      '<button class="del-btn" onclick="delRow(this.closest(\'.lang-item\'))"><i class="fa-solid fa-trash-can"></i></button>';
-    section.insertBefore(item, addBtn.parentNode);
-    item.querySelector('.lang-name').focus();
-  }
-
-  // ── HELPER: add certification entry ──
-  function addCertItem(){
-    var section = document.getElementById('cert-section');
-    var addBtn = section.querySelector('.add-section-btn');
-    var item = document.createElement('div');
-    item.className = 'cert-item';
-    item.innerHTML =
-      '<div class="cert-name" contenteditable="true" style="color:#999">CERTIFICATION NAME — click to edit</div>'+
-      '<div class="cert-org" contenteditable="true" style="color:#999">Issuing organization</div>'+
-      '<div class="cert-yr" contenteditable="true" style="color:#999">Year</div>'+
-      '<div class="row-actions"><button class="del-btn" onclick="delRow(this.closest(\'.cert-item\'))"><i class="fa-solid fa-trash-can"></i> Delete</button></div>';
-    section.insertBefore(item, addBtn);
-    item.querySelector('.cert-name').focus();
-  }
-
-  // ── HELPER: add skill entry ──
-  function addSkillItem(){
-    var ul = document.querySelector('#skills-section .skills-grid');
-    var li = document.createElement('li');
-    li.innerHTML = '<span contenteditable="true" style="color:#999">New skill — click to edit</span>'+
-      '<button class="del-btn" onclick="delRow(this.closest('li'))" title="Delete"><i class="fa-solid fa-trash-can"></i></button>';
-    var span = li.querySelector('span');
-    span.addEventListener('focus',function(){ if(span.style.color==='rgb(153, 153, 153)'){span.textContent='';span.style.color='';} });
-    ul.appendChild(li);
-    span.focus();
   }
 
   // ── PDF DOWNLOAD ──
@@ -755,8 +621,8 @@
         var cn=el.querySelector('.cert-name'); if(cn) d.certifications[i].name=cn.innerText.trim();
         var co=el.querySelector('.cert-org'); if(co) d.certifications[i].organization=co.innerText.trim();
       });
-      var skillItems = page.querySelectorAll('.skills-grid li span');
-      if(skillItems.length) d.skills = Array.from(skillItems).map(function(s){return s.innerText.trim();}).filter(function(s){return s;});
+      var skillItems = page.querySelectorAll('.skills-grid li');
+      d.skills = Array.from(skillItems).map(function(s){return s.innerText.trim();});
     } catch(e){ console.warn('readLiveEdits error:',e); }
   }
 
